@@ -1,0 +1,44 @@
+name: Convert TeX to PDF
+on:
+  push:
+    paths:
+      - tex/**
+
+  pull_request:
+    paths:
+      - tex/**
+
+  workflow_dispatch:
+jobs:
+  batch_convert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Compile multiple LaTeX documents using glob
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: "*.tex"
+          glob_root_file: true
+          working_directory: tex/
+
+      - name: Create local changes
+        run: |
+          mv tex/*pdf pdfs/
+
+      - name: Commit files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add pdfs
+          git commit -m "Add changes"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ECS220_WRITE_SECRET }}
+          branch: ${{ github.ref }}
