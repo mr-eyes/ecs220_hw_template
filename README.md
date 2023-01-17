@@ -1,5 +1,4 @@
-# A template repo that does the following:
-
+A template repo that does the following:
 - You work/collaborate on LaTeX files under `tex/` directory then it will be auto-rendered to PDFs under the `pdfs` directory.
 
 
